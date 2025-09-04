@@ -1,0 +1,46 @@
+class Solution(object):
+    def minimumSum(self, grid):
+        def Rotate(grid):
+            n, m = len(grid), len(grid[0])
+            rotated = [[0]*n for _ in range(m)]
+            for i in range(n):
+                for j in range(m):
+                    rotated[j][n-i-1] = grid[i][j]
+            return rotated
+
+        def solve(grid1, u, d, l, r):
+            n1, m1 = len(grid1), len(grid1[0])
+            if u > d or l > r:
+                return 100000007
+            minRow, minCol = n1, m1
+            maxRow, maxCol = -1, -1
+            for i in range(u, min(d+1, n1)):
+                for j in range(l, min(r+1, m1)):
+                    if grid1[i][j] == 1:
+                        minRow = min(minRow, i)
+                        maxRow = max(maxRow, i)
+                        minCol = min(minCol, j)
+                        maxCol = max(maxCol, j)
+            if maxRow == -1:
+                return 100000007
+            return (maxRow - minRow + 1) * (maxCol - minCol + 1)
+
+        def help(grid1):
+            n1, m1 = len(grid1), len(grid1[0])
+            ans = n1 * m1
+            for row in range(n1):
+                for col in range(m1):
+                    # top left, right/ bottom
+                    area1 = solve(grid1, 0, row, 0, m1-1) + solve(grid1, row+1, n1-1, 0, col) + solve(grid1, row+1, n1-1, col+1, m1-1)
+                    # top / bottom left, rigth
+                    area2 = solve(grid1, 0, row, 0, col) + solve(grid1, 0, row, col+1, m1-1) + solve(grid1, row+1, n1-1, 0, m1-1)
+                    ans = min(ans, area1, area2)
+            for r1 in range(n1-2):
+                for r2 in range(r1+1, n1-1):
+                    # Slide
+                    area = solve(grid1, 0, r1, 0, m1-1) + solve(grid1, r1+1, r2, 0, m1-1) + solve(grid1, r2+1, n1-1, 0, m1-1)
+                    ans = min(ans, area)
+            return ans
+
+        rotated = Rotate(grid)
+        return min(help(grid), help(rotated))
