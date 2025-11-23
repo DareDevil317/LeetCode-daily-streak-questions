@@ -1,0 +1,14 @@
+class Solution:
+    def sortVowels(self, s: str) -> str:
+        vowels = set("aeiouAEIOU")
+        v_list = [c for c in s if c in vowels]
+        v_list.sort()
+        result = []
+        j=0
+        for c in s:
+            if c in vowels:
+                result.append(v_list[j])
+                j+=1
+            else:
+                result.append(c)
+        return "".join(result)
