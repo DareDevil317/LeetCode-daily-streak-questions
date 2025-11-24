@@ -1,0 +1,46 @@
+class Spreadsheet:
+
+    def __init__(self, rows: int):
+        self.hashMap = {}
+        for col in string.ascii_uppercase:
+            self.hashMap[col]= {}
+            # for row in range(rows):
+            #     self.hashMap[col][row] = 0
+
+    def setCell(self, cell: str, value: int) -> None:
+        self.hashMap[cell[:1]][cell[1:]] = value
+
+    def resetCell(self, cell: str) -> None:
+        self.hashMap[cell[:1]][cell[1:]] = 0
+
+    def getValue(self, formula: str) -> int:
+        equalto = formula.index("=")
+        plus = formula.index("+")
+        first = formula[equalto+1:plus]
+        second = formula[plus+1:]
+        val1 = 0
+        val2 = 0
+        if (first.isnumeric() and second.isnumeric()):
+            val1 = int(first) 
+            val2 = int(second)
+        elif (first.isnumeric() and second.isalnum()):
+            val1 = int(first)
+            if (second[1:] in self.hashMap[second[:1]]):
+                val2 = self.hashMap[second[:1]][second[1:]]
+        elif (first.isalnum() and second.isnumeric()):
+            if (first[1:] in self.hashMap[first[:1]]):
+                val1 = self.hashMap[first[:1]][first[1:]]
+            val2 = int(second)
+        else:
+            if (first[1:] in self.hashMap[first[:1]]):
+                val1 = int(self.hashMap[first[:1]][first[1:]])
+            if (second[1:] in self.hashMap[second[:1]]):
+                val2 = int(self.hashMap[second[:1]][second[1:]])
+        return val1 + val2
+
+
+# Your Spreadsheet object will be instantiated and called as such:
+# obj = Spreadsheet(rows)
+# obj.setCell(cell,value)
+# obj.resetCell(cell)
+# param_3 = obj.getValue(formula)
